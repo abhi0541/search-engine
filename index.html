@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Simple Search Engine</title>
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e9ecef; /* Light grey background */
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Container Styles */
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #ffffff; /* White background for container */
+            padding: 20px;
+            border-radius: 8px; /* Slightly more rounded corners */
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s; /* Smooth transition */
+        }
+
+        /* Container Hover Effect */
+        .container:hover {
+            transform: scale(1.02); /* Slightly enlarge on hover */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+        }
+
+        /* Heading Styles */
+        h1 {
+            text-align: center;
+            color: #343a40; /* Dark grey for better contrast */
+        }
+
+        /* Input Field Styles */
+        input[type="text"] {
+            width: calc(75% - 20px); /* Adjusted width for better layout */
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ced4da; /* Light grey border for the input */
+            border-radius: 4px; /* Rounded corners */
+            transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition */
+        }
+
+        /* Input Hover and Focus Effect */
+        input[type="text"]:hover,
+        input[type="text"]:focus {
+            border-color: #80bdff; /* Light blue border on hover/focus */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Light shadow on focus */
+            outline: none; /* Remove default outline */
+        }
+
+        /* Button Styles */
+        button {
+            padding: 10px 15px;
+            border: none; /* Remove default border */
+            border-radius: 4px; /* Rounded corners */
+            background-color: #007bff; /* Button background color */
+            color: white; /* Button text color */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+        }
+
+        /* Button Hover Effect */
+        button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            transform: translateY(-2px); /* Slight lift effect on hover */
+        }
+
+        /* Search History Styles */
+        #search-history {
+            margin-top: 20px;
+        }
+
+        /* History List Styles */
+        #history-list {
+            list-style-type: none; /* Remove default list styling */
+            padding: 0; /* Remove default padding */
+        }
+
+        /* History List Item Styles */
+        #history-list li {
+            padding: 10px 0; /* Spacing between items */
+            border-bottom: 1px solid #ced4da; /* Light grey divider line */
+            transition: background-color 0.3s; /* Smooth background transition */
+        }
+
+        /* History Item Hover Effect */
+        #history-list li:hover {
+            background-color: #f8f9fa; /* Very light gray background on hover */
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            input[type="text"] {
+                width: 100%; /* Full width on smaller screens */
+                margin-right: 0; /* Remove right margin */
+                margin-bottom: 10px; /* Add bottom margin */
+            }
+
+            button {
+                width: 100%; /* Full width buttons on smaller screens */
+                margin-bottom: 10px; /* Add bottom margin */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Search Engine</h1>
+        <input type="text" id="search-input" placeholder="Enter your search term...">
+        <button id="search-button">Search</button><br><br>
+        <button id="clear-history">Clear History</button><br><br>
+        <div id="search-history">
+            <h2>Search History</h2>
+            <ul id="history-list"></ul>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+            const clearHistoryButton = document.getElementById('clear-history');
+            const historyList = document.getElementById('history-list');
+
+            // Load search history
+            loadSearchHistory();
+
+            // Search button event
+            searchButton.addEventListener('click', () => {
+                const query = searchInput.value.trim();
+                if (query) {
+                    addSearchToHistory(query);
+                    searchInput.value = ''; // Clear input field
+                    // Here you can add your search functionality
+                }
+            });
+
+            // Clear history button event
+            clearHistoryButton.addEventListener('click', () => {
+                localStorage.removeItem('searchHistory');
+                historyList.innerHTML = ''; // Clear displayed history
+            });
+
+            function addSearchToHistory(query) {
+                let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+                if (!history.includes(query)) {
+                    history.push(query);
+                    localStorage.setItem('searchHistory', JSON.stringify(history));
+                    displaySearchHistory(history);
+                }
+            }
+
+            function loadSearchHistory() {
+                const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+                displaySearchHistory(history);
+            }
+
+            function displaySearchHistory(history) {
+                historyList.innerHTML = '';
+                history.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    historyList.appendChild(li);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
